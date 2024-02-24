@@ -9,7 +9,7 @@ export const metadata = {
   title: "Beat It",
 };
 
-export default function RootLayout({ children }) {
+function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={poppins.className}>
@@ -20,3 +20,5 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+export default RootLayout;
