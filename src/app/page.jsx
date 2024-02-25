@@ -3,7 +3,7 @@ import Link from "next/link";
 
 function HomePage() {
   return (
-    <div className="w-full h-[90%] lg:h-[80%] flex flex-col justify-center items-center">
+    <div className="w-full pt-16 h-[90%] lg:h-[80%] flex flex-col justify-center items-center">
       <h2 className="text-center text-2xl font-semibold my-2">
         Welcome to Beat It
       </h2>

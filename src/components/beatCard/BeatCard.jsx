@@ -3,9 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 
-function BeatCard({ beat }) {
-  const HandleDescriptionShow = (e) => {
+function BeatCard({ beat, playerParams }) {
+  const handleDescriptionShow = (e) => {
     e.target.classList.toggle("truncate");
+  };
+
+  const handleBeatPlay = (beat) => {
+    if (!playerParams.isOpen) {
+      playerParams.onOpen();
+    }
+    playerParams.initBeat(beat);
   };
 
   return (
@@ -13,12 +20,17 @@ function BeatCard({ beat }) {
       <div className="flex">
         <div className="flex mr-auto gap-4 items-center mb-4">
           <div className="relative w-12 h-12 rounded-full">
-            <Image src="/assets/avatar.png" fill alt="Avatar image" />
+            <Image
+              src="/assets/avatar.png"
+              fill
+              alt="Avatar image"
+              className="object-cover"
+            />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold">selim.altayev@gmail.com</span>
+            <span className="font-bold">{beat?.user}</span>
             <span className="font-semibold text-light-blue text-xs">
-              12.12.2022, 15:32
+              {beat?.created_at}
             </span>
           </div>
         </div>
@@ -34,16 +46,16 @@ function BeatCard({ beat }) {
         </div>
       </div>
       <div>
-        <div className="relative w-full h-80 mb-2 rounded-md overflow-hidden">
-          <Link href="/beats/1">
+        <Link href="/beats/1">
+          <div className="relative w-full h-80 mb-2 rounded-md overflow-hidden">
             <Image
-              src="/assets/testimg.png"
+              src={beat?.cover_url}
               alt="Beat cover image"
               fill
               className="object-cover"
             />
-          </Link>
-        </div>
+          </div>
+        </Link>
         <div className="flex gap-2 justify-end mb-2 items-center">
           <span className="font-semibold">0</span>
           <button className="p-0 h-fit bg-transparent hover:bg-transparent">
@@ -75,7 +87,7 @@ function BeatCard({ beat }) {
         </div>
         <div
           className="text-justify w-full h-fit truncate mb-4 cursor-pointer"
-          onClick={HandleDescriptionShow}
+          onClick={handleDescriptionShow}
         >
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore
           atque, illum odio blanditiis excepturi expedita voluptatum tempora
@@ -84,11 +96,11 @@ function BeatCard({ beat }) {
         </div>
       </div>
       <div className="flex gap-2 items-center">
-        <button>Play</button>
+        <button onClick={() => handleBeatPlay(beat)}>Play</button>
         <div className="flex flex-col">
-          <span className="font-bold">Song title</span>
+          <span className="font-bold">{beat?.title}</span>
           <span className="text-xs text-light-blue">
-            selim.altayev@gmail.com
+            {beat?.user}
           </span>
         </div>
       </div>
