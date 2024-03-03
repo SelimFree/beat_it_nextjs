@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { formatSeconds } from "../utils";
+
+const MAX_SUSPEND_COUNT = 10;
 
 function BeatPlayer({ playerParams }) {
   const [audioTimeInfo, setAudioTimeInfo] = useState({
@@ -16,6 +18,7 @@ function BeatPlayer({ playerParams }) {
   const dataArray = useRef(null);
   const visualiserRef = useRef(null);
   let animationFrameId;
+  let suspendCount = 0;
 
   const handleTimeUpdate = (e) => {
     setTimeout(() => {
@@ -36,15 +39,17 @@ function BeatPlayer({ playerParams }) {
     const audio = playerParams.audioRef.current;
     if (playerParams.isPlaying) {
       audio.pause();
+      audioContext.current.suspend();
       playerParams.setIsPlaying(false);
     } else {
       audio.play();
+      audioContext.current.resume();
       playerParams.setIsPlaying(true);
+      renderFrame();
     }
   };
 
   const renderFrame = () => {
-    console.log("rendering");
     analyser.current.getByteFrequencyData(dataArray.current);
 
     const arr = [...dataArray.current];
@@ -54,9 +59,15 @@ function BeatPlayer({ playerParams }) {
     const scale = 1 + average / 500;
 
     animationFrameId = requestAnimationFrame(renderFrame);
+    console.log(audioContext.current.state);
 
-    if (!visualiserRef.current) {
+    if (audioContext.current.state === "suspended") {
+      suspendCount++;
+    }
+
+    if (!visualiserRef.current || suspendCount > MAX_SUSPEND_COUNT) {
       cancelAnimationFrame(animationFrameId);
+      suspendCount = 0;
     } else {
       visualiserRef.current.style.transform = `scale(${scale > 1 ? scale : 1})`;
     }
@@ -109,7 +120,7 @@ function BeatPlayer({ playerParams }) {
         <div className="relative mb-4 lg:w-[12rem]">
           <div ref={visualiserRef} id="visualizer"></div>
           <Image
-            src={playerParams.currentBeat?.cover_url || ""}
+            src={playerParams.currentBeat?.cover || "/assets/logo.png"}
             width={250}
             height={250}
             alt="Beat cover image"
@@ -123,7 +134,7 @@ function BeatPlayer({ playerParams }) {
             {playerParams.currentBeat?.title}
           </span>
           <span className="font-semibold text-xs text-light-blue">
-            {playerParams.currentBeat?.user}
+            {playerParams.currentBeat?.userId?.username}
           </span>
         </div>
         <div className="flex items-center justify-center gap-2">
@@ -184,7 +195,7 @@ function BeatPlayer({ playerParams }) {
         </div>
       </div>
       <audio
-        src={playerParams.currentBeat?.audio_url}
+        src={playerParams.currentBeat?.audio}
         ref={playerParams.audioRef}
         onLoadedMetadata={handleBeatInit}
         onTimeUpdate={handleTimeUpdate}

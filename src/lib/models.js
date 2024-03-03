@@ -56,8 +56,9 @@ const beatSchema = new mongoose.Schema(
       max: 1000,
     },
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "User",
     },
   },
   { timestamps: true }

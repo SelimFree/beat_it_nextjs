@@ -28,9 +28,9 @@ function BeatCard({ beat, playerParams }) {
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold">{beat?.user}</span>
+            <span className="font-bold">{beat?.userId?.username}</span>
             <span className="font-semibold text-light-blue text-xs">
-              {beat?.created_at}
+              {beat?.userId?.created_at}
             </span>
           </div>
         </div>
@@ -46,10 +46,10 @@ function BeatCard({ beat, playerParams }) {
         </div>
       </div>
       <div>
-        <Link href="/beats/1">
+        <Link href={`/beats/${beat?._id}`}>
           <div className="relative w-full h-80 mb-2 rounded-md overflow-hidden">
             <Image
-              src={beat?.cover_url}
+              src={beat?.cover || "/assets/logo.png"}
               alt="Beat cover image"
               fill
               className="object-cover"
@@ -89,10 +89,7 @@ function BeatCard({ beat, playerParams }) {
           className="text-justify w-full h-fit truncate mb-4 cursor-pointer"
           onClick={handleDescriptionShow}
         >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore
-          atque, illum odio blanditiis excepturi expedita voluptatum tempora
-          architecto, placeat a vitae aliquid nisi illo quibusdam. Veniam earum
-          hic aliquam est.
+          {beat?.description}
         </div>
       </div>
       <div className="flex gap-2 items-center">
@@ -100,7 +97,7 @@ function BeatCard({ beat, playerParams }) {
         <div className="flex flex-col">
           <span className="font-bold">{beat?.title}</span>
           <span className="text-xs text-light-blue">
-            {beat?.user}
+            {beat?.userId?.username}
           </span>
         </div>
       </div>

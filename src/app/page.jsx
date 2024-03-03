@@ -3,8 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 async function HomePage() {
-  const data = await getUsers();
-  console.log(data);
+
   return (
     <div className="w-full pt-16 h-[90%] lg:h-[80%] flex flex-col justify-center items-center">
       <h2 className="text-center text-2xl font-semibold my-2">
