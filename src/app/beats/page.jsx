@@ -47,7 +47,7 @@ const BeatsPage = () => {
 
   return (
     <>
-      <div className="px-4 pb-16 pt-16 flex flex-col gap-4 items-center">
+      <div className="px-4 py-16 flex flex-col gap-4 items-center">
         {data.map((el, i) => (
           <BeatCard
             key={i}

@@ -1,13 +1,21 @@
+import { getUsers } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
-function HomePage() {
+async function HomePage() {
+  const data = await getUsers();
+  console.log(data);
   return (
     <div className="w-full pt-16 h-[90%] lg:h-[80%] flex flex-col justify-center items-center">
       <h2 className="text-center text-2xl font-semibold my-2">
         Welcome to Beat It
       </h2>
-      <Image src="/assets/listening.png" width={250} height={250} alt="A man listening to music in headphones"/>
+      <Image
+        src="/assets/listening.png"
+        width={250}
+        height={250}
+        alt="A man listening to music in headphones"
+      />
       <h3 className="text-center text-xl font-regular">
         Explore others and
         <br />
