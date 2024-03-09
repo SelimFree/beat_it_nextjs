@@ -23,7 +23,7 @@ const links = [
   },
   {
     title: "Create beat",
-    path: "/beats/create",
+    path: "/beats/new",
   },
   {
     title: "Login",

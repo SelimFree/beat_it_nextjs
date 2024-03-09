@@ -6,7 +6,10 @@ import Footer from "@/components/footer/Footer";
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
 export const metadata = {
-  title: "Beat It",
+  title: {
+    default: "Home | Beat It",
+    template: "%s | Beat It"
+  },
 };
 
 function RootLayout({ children }) {

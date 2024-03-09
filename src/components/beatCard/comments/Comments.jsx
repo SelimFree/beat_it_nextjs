@@ -8,7 +8,7 @@ function Comments() {
       <div className="flex w-full mb-4">
         <input
           type="text"
-          className="flex-1 rounded-l-[10px] p-2 text-md focus:outline-light-blue"
+          className="flex-1 rounded-l-[10px] text-md"
         />
         <button className="rounded-r-[10px] rounded-l-none">Send</button>
       </div>
