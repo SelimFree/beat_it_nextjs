@@ -96,6 +96,7 @@ function BeatPlayer({ playerParams }) {
     dataArray.current = new Uint8Array(analyser.current.frequencyBinCount);
 
     playerParams.audioRef.current.play();
+    audioContext.current.resume();
     renderFrame();
   };
 

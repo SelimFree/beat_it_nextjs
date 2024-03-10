@@ -32,7 +32,7 @@ export async function saveFile(mediaFile, path) {
   }
 
   const fileType = mediaFile.name.split(".").pop();
-  const filePath = `${path}/beat_cover.${fileType}`;
+  const filePath = `${path}/beat_media_${Date.now()}.${fileType}`;
 
   try {
     if (!fs.existsSync(path)) {

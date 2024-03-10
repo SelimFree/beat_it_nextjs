@@ -3,13 +3,13 @@ import React from "react";
 
 function BeatForm({ id }) {
   return (
-    <div className="px-4 py-16 flex flex-col gap-4 items-center h-full">
+    <div className="px-4 pt-24 pb-16 flex flex-col gap-4 items-center justify-center h-full">
       <h2 className="text-2xl font-semibold mt-4 lg:mt-0">
         Share your talent!
       </h2>
       <form
         action={createBeat}
-        className="flex flex-col gap-4 w-full lg:w-[40rem] h-full"
+        className="flex flex-col gap-4 w-full lg:w-[40rem]"
       >
         <div>
           <h4>Title</h4>
@@ -22,12 +22,7 @@ function BeatForm({ id }) {
         </div>
         <div>
           <h4>Description</h4>
-          <textarea
-            name="description"
-            cols="30"
-            rows="10"
-            className="w-full"
-          ></textarea>
+          <textarea name="description" rows="8" className="w-full"></textarea>
           <span className="text-light-red">Invalid title</span>
         </div>
         <div className="flex flex-col lg:flex-row gap-4 justify-between mb-auto lg:mb-4">
@@ -46,7 +41,7 @@ function BeatForm({ id }) {
             <span className="text-light-red">Invalid title</span>
           </div>
         </div>
-        <input type="hidden" value={"65e343b64b77d739e4a8a680"} name="userId"/>
+        <input type="hidden" value={"65e343b64b77d739e4a8a680"} name="userId" />
         <button>Create a beat</button>
       </form>
     </div>
