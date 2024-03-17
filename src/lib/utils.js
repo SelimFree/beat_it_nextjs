@@ -50,3 +50,32 @@ export async function saveFile(mediaFile, path) {
     console.log(e);
   }
 }
+
+export function validate(formData) {
+  for (let field in formData) {
+    switch (field) {
+      case "username":
+        const regexUsername = /^.{2,20}$/;
+        if (!regexUsername.test(formData["username"])) {
+          return {
+            error: "Username must have 2-20 characters",
+          };
+        }
+      case "email":
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexEmail.test(formData["email"])) {
+          return {
+            error: "Invalid email",
+          };
+        }
+      case "password":
+        const regexPassword = /^.{8,}$/;
+
+        if (!regexPassword.test(formData["password"])) {
+          return {
+            error: "Password must have at least 8 characters",
+          };
+        }
+    }
+  }
+}

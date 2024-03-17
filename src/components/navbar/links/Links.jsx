@@ -4,42 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const links = [
-  {
-    title: "Beats",
-    path: "/beats",
-  },
-  {
-    title: "Admin",
-    path: "/admin",
-  },
-  {
-    title: "Profile",
-    path: "/profile",
-  },
-  {
-    title: "My beats",
-    path: "/beats/my",
-  },
-  {
-    title: "Create beat",
-    path: "/beats/new",
-  },
-  {
-    title: "Login",
-    path: "/login",
-  },
-  {
-    title: "About",
-    path: "/about",
-  },
-  {
-    title: "Contact us",
-    path: "/contact",
-  },
-];
-
-function Links() {
+function Links({ links }) {
   const [menuOpened, setMenuOpened] = useState(false);
   const [menuOpenedMobile, setMenuOpenedMoblie] = useState(false);
 
@@ -76,15 +41,19 @@ function Links() {
           onClick={() => setMenuOpenedMoblie(false)}
         >
           <div className="w-[75%] h-full relative bg-dark-blue flex flex-col gap-4 justify-center items-center font-semibold">
-            {links.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className="text-white text-lg"
-              >
-                {link.title}
-              </Link>
-            ))}
+            {links.map((link) => {
+              if (link.visible) {
+                return (
+                  <Link
+                    key={link.path}
+                    href={link.path}
+                    className="text-white text-lg"
+                  >
+                    {link.title}
+                  </Link>
+                );
+              }
+            })}
             <div className="text-white absolute bottom-5 right-5 text-lg">
               Beat It Rocks!
             </div>

@@ -1,10 +1,12 @@
 import BeatForm from "@/components/beatForm/BeatForm";
 import React from "react";
+import { auth } from "@/lib/auth";
 
-function NewBeat() {
+async function NewBeat() {
+  const session = await auth();
   return (
     <>
-      <BeatForm />
+      <BeatForm user={session?.user} />
     </>
   );
 }

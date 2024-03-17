@@ -1,7 +1,7 @@
 import { createBeat } from "@/lib/actions";
 import React from "react";
 
-function BeatForm({ id }) {
+function BeatForm({ id, user }) {
   return (
     <div className="px-4 pt-24 pb-16 flex flex-col gap-4 items-center justify-center h-full">
       <h2 className="text-2xl font-semibold mt-4 lg:mt-0">
@@ -41,7 +41,7 @@ function BeatForm({ id }) {
             <span className="text-light-red">Invalid title</span>
           </div>
         </div>
-        <input type="hidden" value={"65e343b64b77d739e4a8a680"} name="userId" />
+        <input type="hidden" value={user?.id} name="userId" />
         <button>Create a beat</button>
       </form>
     </div>

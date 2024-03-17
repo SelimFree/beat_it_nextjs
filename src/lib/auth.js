@@ -4,6 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDB } from "./utils";
 import { User } from "./models";
 import bcrypt from "bcryptjs";
+import { authConfig } from "./auth.config";
+
 
 const login = async (credentials) => {
   try {
@@ -16,7 +18,7 @@ const login = async (credentials) => {
 
     const isCorrectPassword = await bcrypt.compare(
       credentials.password,
-      dbUser.password
+      dbUser.password || ""
     );
 
     if (!isCorrectPassword) {
@@ -25,7 +27,6 @@ const login = async (credentials) => {
 
     return dbUser;
   } catch (err) {
-    console.log(err);
     throw new Error("Failed to login");
   }
 };
@@ -36,6 +37,7 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  ...authConfig,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -64,6 +66,7 @@ export const {
               username: user.name,
               email: user.email,
               picture: user.image,
+              isAdmin: false,
             });
 
             await newUser.save();
@@ -76,5 +79,6 @@ export const {
       }
       return true;
     },
+    ...authConfig.callbacks,
   },
 });

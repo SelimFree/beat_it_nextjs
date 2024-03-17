@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { Beat, User } from "./models";
-import { connectToDB, saveFile } from "./utils";
+import { connectToDB, saveFile, validate } from "./utils";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "./auth";
 import bcrypt from "bcryptjs";
@@ -46,9 +46,15 @@ export async function createBeat(formData) {
   redirect("/beats");
 }
 
-export async function handleCredentialsRegister(formData) {
+export async function handleCredentialsRegister(formState, formData) {
   const { username, email, password, repeat_password } =
     Object.fromEntries(formData);
+
+  const error = validate(Object.fromEntries(formData));
+  if (error) {
+    console.log(error);
+    return error;
+  }
 
   if (password !== repeat_password) {
     return {
@@ -73,19 +79,33 @@ export async function handleCredentialsRegister(formData) {
       username,
       email,
       password: hashedPassword,
+      isAdmin: false,
     });
 
     await newUser.save();
+    return {
+      success: true,
+    };
   } catch (err) {
-    console.log(err);
-    return false;
+    return {
+      error: "Failed to register",
+    };
   }
 }
 
-export async function handleCredentialsLogin(formData) {
-  const { email, password } =
-    Object.fromEntries(formData);
-  await signIn("credentials", { email, password });
+export async function handleCredentialsLogin(formState, formData) {
+  const { email, password } = Object.fromEntries(formData);
+
+  try {
+    await signIn("credentials", { email, password });
+  } catch (err) {
+    if (err.message.includes("credentialssignin")) {
+      return {
+        error: "Invalid credentials",
+      };
+    }
+    throw err;
+  }
 }
 
 export async function handleGoogleLogin() {
