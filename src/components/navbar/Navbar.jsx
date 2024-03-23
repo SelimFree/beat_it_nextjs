@@ -4,14 +4,13 @@ import Image from "next/image";
 import { auth } from "@/lib/auth";
 
 async function Navbar() {
-
   const session = await auth();
 
   const links = [
     {
       title: "Beats",
       path: "/beats",
-      visible: true ,
+      visible: true,
     },
     {
       title: "Admin",
@@ -53,11 +52,11 @@ async function Navbar() {
   return (
     <nav className="w-full flex justify-between items-center py-2 px-4 fixed top-0 right-0 bg-transparent-light-blue z-10">
       <Link href="/" className="flex gap-2 items-center">
-        <Image src="/assets/logo.png" width={50} height={50} alt="Logo"/>
+        <Image src="/assets/logo.png" width={50} height={50} alt="Logo" />
         <h1 className="text-2xl text font-bold">Beat It</h1>
       </Link>
       <div>
-        <Links links={links}/>
+        <Links links={links} user={session?.user} />
       </div>
     </nav>
   );

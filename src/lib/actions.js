@@ -2,33 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 import { Beat, User } from "./models";
-import { connectToDB, saveFile, validate } from "./utils";
+import { connectToDB, saveFile, validate, validateFile } from "./utils";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "./auth";
 import bcrypt from "bcryptjs";
-const beatUploadFolder = "public/upload/beats";
-const userUploadFolder = "public/upload/users";
 
-export async function createBeat(formData) {
+export async function handleCreateBeat(formState, formData) {
+  const { title, description, cover_create, audio_create, userId } =
+    Object.fromEntries(formData);
+
+  let error = validate(Object.fromEntries(formData));
+  if (error) {
+    return error;
+  }
   try {
     connectToDB();
-    const title = formData.get("title");
-    const description = formData.get("description");
-    const coverImage = formData.get("cover");
-    const audioFile = formData.get("audio");
-    const userId = formData.get("userId");
-
-    const coverImagePath = await saveFile(
-      coverImage,
-      `${beatUploadFolder}/images`
-    );
-    const audioFilePath = await saveFile(
-      audioFile,
-      `${beatUploadFolder}/audio`
-    );
-
+    const coverImagePath = await saveFile(cover_create);
+    const audioFilePath = await saveFile(audio_create);
     const user = await User.findById(userId);
-
     const newBeat = new Beat({
       userId: user._id,
       title,
@@ -36,7 +27,6 @@ export async function createBeat(formData) {
       cover: coverImagePath,
       audio: audioFilePath,
     });
-
     await newBeat.save();
   } catch (error) {
     console.log(error);

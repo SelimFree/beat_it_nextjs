@@ -8,6 +8,7 @@ export const authConfig = {
       if (user) {
         token.id = user.id;
         token.isAdmin = user.isAdmin;
+        token.username = user.username;
       }
       return token;
     },
@@ -15,6 +16,7 @@ export const authConfig = {
       if (token) {
         session.user.id = token.id;
         session.user.isAdmin = token.isAdmin;
+        session.user.username = token.username;
         return session;
       }
     },

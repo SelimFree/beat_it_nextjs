@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-function Links({ links }) {
+function Links({ links, user }) {
   const [menuOpened, setMenuOpened] = useState(false);
   const [menuOpenedMobile, setMenuOpenedMoblie] = useState(false);
 
@@ -65,7 +65,7 @@ function Links({ links }) {
           className="flex gap-4 items-center"
           onClick={() => setMenuOpened(!menuOpened)}
         >
-          <span className="text-md">Guest</span>
+          <span className="text-md">{user ? user.username : "Guest"}</span>
           <Image
             src="/assets/menu.png"
             width={25}
@@ -79,15 +79,19 @@ function Links({ links }) {
           } transition-transform duration-150 ease-out`}
           onClick={() => setMenuOpened(false)}
         >
-          {links.map((link) => (
-            <Link
-              key={link.path}
-              href={link.path}
-              className="text-white text-lg p-2 hover:bg-dark-blue"
-            >
-              {link.title}
-            </Link>
-          ))}
+          {links.map((link) => {
+            if (link.visible) {
+              return (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  className="text-white text-lg p-2 hover:bg-dark-blue"
+                >
+                  {link.title}
+                </Link>
+              );
+            }
+          })}
         </nav>
       </div>
     </>

@@ -35,6 +35,29 @@ function BeatPlayer({ playerParams }) {
     }, 500);
   };
 
+  const handleBeatTimeChange = (e) => {
+    setAudioTimeInfo((prev) => {
+      return {
+        ...prev,
+        currentTime: e.target.value,
+        animationPercentage: Math.round((e.target.value / prev.duration) * 100),
+      };
+    });
+    playerParams.audioRef.current.currentTime = e.target.value;
+  };
+
+  const handlePlayAgain = () => {
+    setAudioTimeInfo((prev) => {
+      return {
+        ...prev,
+        currentTime: 0,
+        animationPercentage: 0,
+      };
+    });
+    playerParams.audioRef.current.currentTime = 0;
+    playerParams.audioRef.current.play();
+  };
+
   const handlePlayPause = () => {
     const audio = playerParams.audioRef.current;
     if (playerParams.isPlaying) {
@@ -142,13 +165,15 @@ function BeatPlayer({ playerParams }) {
           <span className="font-semibold text-light-blue w-10 lg:w-8 text-center lg:text-xs">
             {formatSeconds(audioTimeInfo.currentTime || 0)}
           </span>
-          <div className="relative h-6 rounded-[20px] overflow-hidden border-2 border-light-blue">
+          <div className="relative h-6 w-52 lg:w-40 rounded-[20px] overflow-hidden border-2 border-light-blue">
             <input
               type="range"
-              className="appearance-none w-52 lg:w-40 h-full bg-transparent-light-blue"
+              className="absolute left-0 top-0 z-[2] appearance-none w-full h-full bg-transparent"
+              onChange={handleBeatTimeChange}
             />
+            <div className="absolute left-0 top-0 z-[1] h-full bg-transparent-light-blue"></div>
             <div
-              className={`absolute left-0 top-0 h-full w-0 bg-light-blue rounded-[20px]`}
+              className={`absolute left-0 top-0 z-[0] h-full w-0 bg-light-blue rounded-[20px]`}
               style={{ width: `${audioTimeInfo.animationPercentage}%` }}
             ></div>
           </div>
@@ -157,7 +182,10 @@ function BeatPlayer({ playerParams }) {
           </span>
         </div>
         <div className="flex justify-center items-center gap-12">
-          <button className="bg-transparent p-0 hover:bg-transparent lg:w-8">
+          <button
+            className="bg-transparent p-0 hover:bg-transparent lg:w-8"
+            onClick={playerParams?.prevBeat}
+          >
             <Image
               src="/assets/left.png"
               width={40}
@@ -185,7 +213,10 @@ function BeatPlayer({ playerParams }) {
               />
             )}
           </button>
-          <button className="bg-transparent p-0 hover:bg-transparent lg:w-8">
+          <button
+            className="bg-transparent p-0 hover:bg-transparent lg:w-8"
+            onClick={playerParams?.nextBeat}
+          >
             <Image
               src="/assets/right.png"
               width={40}
@@ -200,6 +231,9 @@ function BeatPlayer({ playerParams }) {
         ref={playerParams.audioRef}
         onLoadedMetadata={handleBeatInit}
         onTimeUpdate={handleTimeUpdate}
+        onEnded={
+          playerParams?.nextBeat ? playerParams?.nextBeat : handlePlayAgain
+        }
       ></audio>
     </div>
   );
