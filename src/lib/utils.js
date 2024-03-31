@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 import fs from "fs";
+import path from "path";
 import { pipeline } from "stream";
 import { promisify } from "util";
 const pump = promisify(pipeline);
@@ -29,7 +30,7 @@ export async function connectToDB() {
 export async function saveFile(mediaFile) {
   const beatUploadFolder = "public/upload/beats";
 
-  if (mediaFile.size === 0) {
+  if (!mediaFile?.size) {
     return;
   }
 
@@ -61,6 +62,18 @@ export async function saveFile(mediaFile) {
     return `${process.env.MEDIA_URL}/${filePath.replace("public/", "")}`;
   } catch (e) {
     console.log(e);
+  }
+}
+
+export async function deleteFile(fileUrl) {
+  const relativeFilePath = fileUrl.replace(`${process.env.MEDIA_URL}`, "");
+
+  const absoluteFilePath = path.join(process.cwd(), "public", relativeFilePath);
+
+  if (fs.existsSync(absoluteFilePath)) {
+    fs.unlinkSync(absoluteFilePath);
+  } else {
+    throw new Error("File doesn't exist");
   }
 }
 
@@ -134,6 +147,26 @@ export function validate(formData) {
         const audioError = validateFile(audioFile);
         if (audioError) {
           return audioError;
+        }
+        break;
+      case "cover_update":
+        const coverImageUpdate = formData[field];
+        if (coverImageUpdate?.size === 0) {
+          return;
+        }
+        const coverUpdateError = validateFile(coverImageUpdate);
+        if (coverUpdateError) {
+          return coverUpdateError;
+        }
+        break;
+      case "audio_update":
+        const audioFileUpdate = formData[field];
+        if (audioFileUpdate?.size === 0) {
+          return;
+        }
+        const audioUpdateError = validateFile(audioFileUpdate);
+        if (audioUpdateError) {
+          return audioUpdateError;
         }
         break;
     }

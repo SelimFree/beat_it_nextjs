@@ -2,13 +2,16 @@
 
 import BeatCard from "@/components/beatCard/BeatCard";
 import BeatPlayer from "@/components/beatPlayer/BeatPlayer";
+import { handleLoadMoreBeats } from "@/lib/actions";
+import { useFormState } from "react-dom";
 import { useRef, useState } from "react";
 
-function BeatList({ data }) {
+function BeatList({ data, user }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentBeat, setCurrentBeat] = useState(null);
-
+  const [formState, formAction] = useFormState(handleLoadMoreBeats, data);
+  const [page, setPage] = useState(2);
   const audioRef = useRef();
 
   const initBeat = (beat) => {
@@ -68,23 +71,43 @@ function BeatList({ data }) {
     initBeat(data?.at(prevBeatIndex));
   };
 
+  const loadMore = (formData) => {
+    formAction(formData);
+    setPage((prev) => {
+      return prev + 1;
+    });
+  };
+
   return (
     <>
-      <div className="px-4 py-16 flex flex-col gap-4 items-center">
-        {data.map((el, i) => (
-          <BeatCard
-            key={i}
-            beat={el}
-            playerParams={{
-              isPlaying,
-              isOpen,
-              onOpen,
-              currentBeat,
-              initBeat,
-              audioRef,
-            }}
-          />
-        ))}
+      <div className="w-full px-4 py-16 flex flex-col gap-4 items-center">
+        {formState.map((el, i) => {
+          return (
+            <BeatCard
+              key={i}
+              beat={el}
+              editable={user?.email === el?.userId?.email}
+              playerParams={{
+                isPlaying,
+                isOpen,
+                onOpen,
+                currentBeat,
+                initBeat,
+                audioRef,
+              }}
+            />
+          );
+        })}
+        {formState?.length ? (
+          <form action={loadMore}>
+            <input type="hidden" name="page" value={page} />
+            <button>More</button>
+          </form>
+        ) : (
+          <div className="w-full h-[80vh] flex items-center justify-center">
+            <h3 className="font-bold text-lg">Nothing do show =(</h3>
+          </div>
+        )}
       </div>
       <BeatPlayer
         playerParams={{

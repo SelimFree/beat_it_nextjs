@@ -1,5 +1,9 @@
 import { handleLogout } from "@/lib/actions";
 
+export const metadata = {
+  title: "Profile",
+};
+
 function ProfilePage() {
   return (
     <div className="px-4 pt-24 pb-16 flex flex-col gap-4 items-center justify-center h-full">

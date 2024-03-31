@@ -2,8 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { formatDate } from "../utils";
+import { useState } from "react";
+import { handleDeleteBeat } from "@/lib/actions";
 
-function BeatCard({ beat, playerParams }) {
+function BeatCard({ beat, playerParams, editable }) {
+  const [showMenu, setShowMenu] = useState(false);
+
   const handleDescriptionShow = (e) => {
     e.target.classList.toggle("truncate");
   };
@@ -13,6 +18,27 @@ function BeatCard({ beat, playerParams }) {
       playerParams.onOpen();
     }
     playerParams.initBeat(beat);
+  };
+
+  const handleDeleteConfirm = async (e, id) => {
+    const delBtn = e.target;
+    const confirm = parseInt(delBtn.getAttribute("data-confirm"));
+    if (confirm) {
+      await handleDeleteBeat(id);
+      setShowMenu(false);
+      window.location.reload();
+    } else {
+      delBtn.textContent = "Confirm";
+      delBtn.setAttribute("data-confirm", 1);
+      setTimeout(() => {
+        delBtn.textContent = "Delete";
+        delBtn.setAttribute("data-confirm", 0);
+      }, 3000);
+    }
+  };
+
+  const handleShare = (e) => {
+    console.log("Sharing...");
   };
 
   return (
@@ -30,12 +56,15 @@ function BeatCard({ beat, playerParams }) {
           <div className="flex flex-col">
             <span className="font-bold">{beat?.userId?.username}</span>
             <span className="font-semibold text-light-blue text-xs">
-              {beat?.userId?.created_at}
+              {formatDate(beat?.createdAt)}
             </span>
           </div>
         </div>
-        <div className="flex gap-4">
-          <button className="h-fit flex justify-center items-center p-2 bg-transparent hover:bg-transparent">
+        <div className="relative flex gap-4">
+          <button
+            className="h-fit flex justify-center items-center p-2 bg-transparent hover:bg-transparent"
+            onClick={() => setShowMenu(!showMenu)}
+          >
             <Image
               src="/assets/options.png"
               alt="Options button"
@@ -43,6 +72,35 @@ function BeatCard({ beat, playerParams }) {
               height={25}
             />
           </button>
+          <div
+            className={`absolute top-12 right-0 w-24 flex flex-col bg-white shadow-2xl rounded-[10px] z-[2] overflow-hidden transition duration-150 ease-in-out ${
+              showMenu ? "scale-100" : "scale-0"
+            }`}
+          >
+            {editable && (
+              <>
+                <Link
+                  href={`/beats/edit/${beat?._id}`}
+                  className="font-bold p-2 hover:bg-transparent-light-blue cursor-pointer"
+                >
+                  Edit
+                </Link>
+                <div
+                  className="font-bold p-2 hover:bg-transparent-light-blue cursor-pointer"
+                  onClick={(e) => handleDeleteConfirm(e, beat?._id)}
+                  data-confirm="0"
+                >
+                  Delete
+                </div>
+              </>
+            )}
+            <div
+              className="font-bold p-2 hover:bg-transparent-light-blue cursor-pointer"
+              onClick={handleShare}
+            >
+              Share
+            </div>
+          </div>
         </div>
       </div>
       <div>

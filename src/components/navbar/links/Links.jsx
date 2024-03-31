@@ -65,7 +65,7 @@ function Links({ links, user }) {
           className="flex gap-4 items-center"
           onClick={() => setMenuOpened(!menuOpened)}
         >
-          <span className="text-md">{user ? user.username : "Guest"}</span>
+          <span className="text-md">{user ? user.name : "Guest"}</span>
           <Image
             src="/assets/menu.png"
             width={25}

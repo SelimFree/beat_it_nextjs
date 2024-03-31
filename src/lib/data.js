@@ -1,13 +1,20 @@
 import { Beat, User } from "./models";
 import { connectToDB } from "./utils";
 
-export async function getBeats() {
+export async function getBeats(params) {
+  const beatPageSize = 10;
+
+  const skip = (params.page - 1) * beatPageSize;
   try {
     connectToDB();
-    const beats = await Beat.find().populate({
-      path: "userId",
-      select: "username picture isAdmin created_at",
-    });
+    const beats = await Beat.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(beatPageSize)
+      .populate({
+        path: "userId",
+        select: "username picture isAdmin created_at email",
+      });
     const plainObjectList = beats.map((obj) => JSON.parse(JSON.stringify(obj)));
     return plainObjectList;
   } catch (error) {
@@ -21,7 +28,7 @@ export async function getBeat(id) {
     connectToDB();
     const beat = await Beat.find({ _id: id }).populate({
       path: "userId",
-      select: "username picture isAdmin created_at",
+      select: "username picture isAdmin created_at email",
     });
 
     if (!beat.length) {

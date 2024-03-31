@@ -6,9 +6,9 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = user._id;
         token.isAdmin = user.isAdmin;
-        token.username = user.username;
+        token.name = user.username;
       }
       return token;
     },
@@ -16,7 +16,7 @@ export const authConfig = {
       if (token) {
         session.user.id = token.id;
         session.user.isAdmin = token.isAdmin;
-        session.user.username = token.username;
+        session.user.name = token.name;
         return session;
       }
     },
