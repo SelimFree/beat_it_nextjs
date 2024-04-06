@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 
 async function Navbar() {
   const session = await auth();
-
+  // console.log(session);
   const links = [
     {
       title: "Beats",

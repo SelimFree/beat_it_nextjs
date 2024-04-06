@@ -87,6 +87,7 @@ function BeatList({ data, user }) {
               key={i}
               beat={el}
               editable={user?.email === el?.userId?.email}
+              user={user?.email}
               playerParams={{
                 isPlaying,
                 isOpen,

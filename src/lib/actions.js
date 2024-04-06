@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { Beat, User } from "./models";
+import { Beat, Like, User } from "./models";
 import { connectToDB, deleteFile, saveFile, validate } from "./utils";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "./auth";
@@ -93,6 +93,32 @@ export async function handleDeleteBeat(id) {
     throw new Error("Failed to delete an entry in 'Beat' model");
   }
   revalidatePath("/beats");
+}
+
+export async function handleLike(id, userEmail) {
+  try {
+    connectToDB();
+    const user = await User.findOne({ email: userEmail });
+    const like = new Like({
+      userId: user._id,
+      beatId: id,
+    });
+    await like.save();
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to create an entry in 'Like' model");
+  }
+}
+
+export async function handleUnlike(id, userEmail) {
+  try {
+    connectToDB();
+    const user = await User.findOne({ email: userEmail });
+    await Like.deleteOne({ beatId: id, usreId: user._id });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to delete an entry in 'Like' model");
+  }
 }
 
 export async function handleLoadMoreBeats(formState, formData) {

@@ -5,7 +5,7 @@ import Comments from "@/components/beatCard/comments/Comments";
 import BeatPlayer from "@/components/beatPlayer/BeatPlayer";
 import { useRef, useState } from "react";
 
-function SingleBeat({ data }) {
+function SingleBeat({ data, user }) {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +34,8 @@ function SingleBeat({ data }) {
       <div className="px-4 py-16 flex flex-col gap-4 items-center">
         <BeatCard
           beat={data}
+          editable={user?.email === data?.userId?.email}
+          user={user?.email}
           playerParams={{
             isPlaying,
             isOpen,

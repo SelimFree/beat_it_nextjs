@@ -3,12 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "../utils";
-import { useState } from "react";
-import { handleDeleteBeat } from "@/lib/actions";
+import { useEffect, useState } from "react";
+import { handleDeleteBeat, handleUnlike, handleLike } from "@/lib/actions";
 
-function BeatCard({ beat, playerParams, editable }) {
+function BeatCard({ beat, playerParams, editable, user }) {
   const [showMenu, setShowMenu] = useState(false);
-
+  const [liked, setLiked] = useState(false);
   const handleDescriptionShow = (e) => {
     e.target.classList.toggle("truncate");
   };
@@ -40,6 +40,24 @@ function BeatCard({ beat, playerParams, editable }) {
   const handleShare = (e) => {
     console.log("Sharing...");
   };
+
+  const handleLikeUnlike = (id, email) => {
+    if (!email) {
+      return;
+    }
+
+    liked ? handleUnlike(id, email) : handleLike(id, email);
+    setLiked((prev) => {
+      return !prev;
+    });
+  };
+
+  useEffect(() => {
+    setLiked(() => {
+      console.log(beat?.liked);
+      return beat?.liked;
+    });
+  }, []);
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-[10px] max-w-[40rem] w-full">
@@ -124,9 +142,12 @@ function BeatCard({ beat, playerParams, editable }) {
               height={25}
             />
           </button>
-          <span className="font-semibold">0</span>
-          <button className="p-0 h-fit bg-transparent hover:bg-transparent">
-            {beat?.liked ? (
+          <span className="font-semibold">{beat?.likesCount}</span>
+          <button
+            className="p-0 h-fit bg-transparent hover:bg-transparent"
+            onClick={() => handleLikeUnlike(beat?._id, user)}
+          >
+            {liked ? (
               <Image
                 src="/assets/like_red.png"
                 alt="Unlike button"

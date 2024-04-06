@@ -168,7 +168,7 @@ function BeatPlayer({ playerParams }) {
           <div className="relative h-6 w-52 lg:w-40 rounded-[20px] overflow-hidden border-2 border-light-blue">
             <input
               type="range"
-              className="absolute left-0 top-0 z-[2] appearance-none w-full h-full bg-transparent"
+              className="absolute left-0 top-0 z-[2] appearance-none w-full h-full bg-transparent cursor-pointer"
               onChange={handleBeatTimeChange}
             />
             <div className="absolute left-0 top-0 z-[1] h-full bg-transparent-light-blue"></div>

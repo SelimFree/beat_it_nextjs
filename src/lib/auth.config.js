@@ -8,7 +8,7 @@ export const authConfig = {
       if (user) {
         token.id = user._id;
         token.isAdmin = user.isAdmin;
-        token.name = user.username;
+        token.name = user.username || user.name;
       }
       return token;
     },
@@ -22,19 +22,22 @@ export const authConfig = {
     },
     authorized({ auth, request }) {
       const user = auth?.user;
-
+  
       const isOnAdminPanel = request.nextUrl?.pathname?.startsWith("/admin");
       const isOnLogin = request.nextUrl?.pathname?.startsWith("/login");
       const isOnRegister = request.nextUrl?.pathname?.startsWith("/register");
       const isOnCreateBeat =
         request.nextUrl?.pathname?.startsWith("/beats/new");
+      const isOnUpdateBeat =
+        request.nextUrl?.pathname?.startsWith("/beats/edit") ;
+        
       const isOnProfile = request.nextUrl?.pathname?.startsWith("/profile");
 
       if (!user?.isAdmin && isOnAdminPanel) {
         return Response.redirect(new URL("/", request.nextUrl));
       }
 
-      if (!user && (isOnCreateBeat || isOnProfile)) {
+      if (!user && (isOnCreateBeat || isOnProfile || isOnUpdateBeat)) {
         return false;
       }
 

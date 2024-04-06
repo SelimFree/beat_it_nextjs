@@ -62,5 +62,22 @@ const beatSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const likeSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    beatId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Beat",
+    },
+  },
+  { timestamps: true }
+);
+
 export const User = mongoose.models.User || mongoose.model("User", userSchema);
 export const Beat = mongoose.models.Beat || mongoose.model("Beat", beatSchema);
+export const Like = mongoose.models.Like || mongoose.model("Like", likeSchema);
