@@ -22,6 +22,11 @@ function Comments({ comments, user, beatId }) {
     });
   };
 
+  const send = (formData) => {
+    formAction(formData);
+    window.location.reload();
+  }
+
   const handleContentShow = (e) => {
     e.target.classList.toggle("truncate");
   };
@@ -30,7 +35,7 @@ function Comments({ comments, user, beatId }) {
     <div className="w-full max-w-[40rem] flex flex-col items-start">
       <h3 className="text-xl font-semibold mb-2">Comments</h3>
       <div className="flex w-full mb-4">
-        <form action={formAction} className="w-full flex flex-col">
+        <form action={send} className="w-full flex flex-col">
           <div className="w-full flex">
             <input
               type="text"
