@@ -106,7 +106,7 @@ function BeatList({ data, user }) {
           </form>
         ) : (
           <div className="w-full h-[80vh] flex items-center justify-center">
-            <h3 className="font-bold text-lg">Nothing do show =(</h3>
+            <h3 className="font-bold text-lg">Nothing to show =(</h3>
           </div>
         )}
       </div>

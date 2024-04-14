@@ -6,7 +6,6 @@ import BeatPlayer from "@/components/beatPlayer/BeatPlayer";
 import { useRef, useState } from "react";
 
 function SingleBeat({ data, user }) {
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentBeat, setCurrentBeat] = useState(null);
@@ -33,8 +32,8 @@ function SingleBeat({ data, user }) {
     <>
       <div className="px-4 py-16 flex flex-col gap-4 items-center">
         <BeatCard
-          beat={data}
-          editable={user?.email === data?.userId?.email}
+          beat={data?.beat}
+          editable={user?.email === data?.beat?.userId?.email}
           user={user?.email}
           playerParams={{
             isPlaying,
@@ -45,7 +44,11 @@ function SingleBeat({ data, user }) {
             audioRef,
           }}
         />
-        <Comments />
+        <Comments
+          comments={data?.comments}
+          user={user?.email}
+          beatId={data?.beat?._id}
+        />
       </div>
       <BeatPlayer
         playerParams={{

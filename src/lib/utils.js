@@ -169,6 +169,15 @@ export function validate(formData) {
           return audioUpdateError;
         }
         break;
+      //Comment content validation
+      case "comment_content":
+        const regexContent = /^.{2,250}$/;
+        if (!regexContent.test(formData[field])) {
+          return {
+            error: "Comment must have 2-250 characters",
+          };
+        }
+        break;
     }
   }
 }

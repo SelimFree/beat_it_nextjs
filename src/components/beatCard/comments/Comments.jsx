@@ -1,19 +1,61 @@
 "use client";
-import Image from "next/image";
 
-function Comments() {
+import { formatDate } from "@/components/utils";
+import { handleCommentCreate, handleLoadMoreComments } from "@/lib/actions";
+import Image from "next/image";
+import { useState } from "react";
+import { useFormState } from "react-dom";
+
+function Comments({ comments, user, beatId }) {
+  const [page, setPage] = useState(2);
+  const [formState, formAction] = useFormState(handleCommentCreate, undefined);
+
+  const [commentsState, commentsAction] = useFormState(
+    handleLoadMoreComments,
+    comments
+  );
+
+  const loadMore = (formData) => {
+    commentsAction(formData);
+    setPage((prev) => {
+      return prev + 1;
+    });
+  };
+
+  const handleContentShow = (e) => {
+    e.target.classList.toggle("truncate");
+  };
+
   return (
     <div className="w-full max-w-[40rem] flex flex-col items-start">
       <h3 className="text-xl font-semibold mb-2">Comments</h3>
       <div className="flex w-full mb-4">
-        <input
-          type="text"
-          className="flex-1 rounded-l-[10px] text-md"
-        />
-        <button className="rounded-r-[10px] rounded-l-none">Send</button>
+        <form action={formAction} className="w-full flex flex-col">
+          <div className="w-full flex">
+            <input
+              type="text"
+              name="comment_content"
+              className="flex-1 rounded-l-[10px] text-md border-2 border-light-blue"
+              disabled={user ? false : true}
+            />
+            <input type="hidden" value={user} name="userEmail" />
+            <input type="hidden" value={beatId} name="beatId" />
+            <button
+              className="w-[5rem] rounded-r-[10px] rounded-l-none"
+              disabled={user ? false : true}
+            >
+              Send
+            </button>
+          </div>
+          <span
+            className={`text-light-red${formState?.error ? "" : " hidden"}`}
+          >
+            {formState?.error}
+          </span>
+        </form>
       </div>
       <div className="w-full flex flex-col rounded-[10px] p-2 bg-white">
-        {[1, 2, 3].map((el, i) => (
+        {commentsState?.map((comment, i) => (
           <div
             key={i}
             className={`py-4 ${
@@ -25,20 +67,31 @@ function Comments() {
                 <Image src="/assets/avatar.png" fill alt="Avatar image" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold">selim.altayev@gmail.com</span>
+                <span className="font-bold">{comment?.userId?.username}</span>
                 <span className="font-semibold text-light-blue text-xs">
-                  12.12.2022, 15:32
+                  {formatDate(comment?.createdAt)}
                 </span>
               </div>
             </div>
-            <div className="text-justify pl-4">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Error
-              doloremque aperiam totam corrupti esse expedita, beatae
-              consectetur quasi, optio odio laudantium dolore consequuntur ab
-              saepe? Aliquid dignissimos nulla deserunt in.
+            <div
+              className="text-justify pl-4 w-full h-fit truncate cursor-pointer"
+              onClick={handleContentShow}
+            >
+              {comment?.content}
             </div>
           </div>
         ))}
+        {commentsState?.length ? (
+          <form action={loadMore} className="self-center">
+            <input type="hidden" name="page" value={page} />
+            <input type="hidden" value={beatId} name="beatId" />
+            <button>More</button>
+          </form>
+        ) : (
+          <div className="w-full flex items-center justify-center">
+            <h3 className="font-bold text-lg">No comments to show =(</h3>
+          </div>
+        )}
       </div>
     </div>
   );

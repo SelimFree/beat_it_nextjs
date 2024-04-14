@@ -1,4 +1,4 @@
-import { Beat, User, Like } from "./models";
+import { Beat, User, Like, Comment } from "./models";
 import { connectToDB } from "./utils";
 
 export async function getBeats(params) {
@@ -17,22 +17,28 @@ export async function getBeats(params) {
       .limit(beatPageSize)
       .populate({
         path: "userId",
-        select: "username picture isAdmin created_at email",
+        select: "username picture isAdmin email",
       });
 
     const plainObjectList = [];
     //Injecting beat likes and comments info
     for (let obj of beats) {
-      const likes = await Like.find({ beatId: obj?._id });
-      const currentUserLiked = likes.find(
-        (el) => el.userId.toString() === currentUserObject?._id.toString()
-      )
-        ? true
-        : false;
+      const commentsCount = await Comment.countDocuments({ beatId: obj?._id });
+
+      const likesCount = await Like.countDocuments({ beatId: obj?._id });
+      const currentUserLike = await Like.find({
+        beatId: obj?._id,
+        userId: currentUserObject?._id,
+      });
+      let liked = false;
+      if (currentUserLike.length) {
+        liked = true;
+      }
       const mergedObject = {
         ...JSON.parse(JSON.stringify(obj)),
-        likesCount: likes.length,
-        liked: currentUserLiked,
+        likesCount,
+        liked,
+        commentsCount,
       };
       plainObjectList.push(mergedObject);
     }
@@ -56,24 +62,58 @@ export async function getBeat(id, email) {
     if (!beat.length) {
       throw new Error("Could not find object by given id");
     }
+    const commentsCount = await Comment.countDocuments({ beatId: id });
 
-    const likes = await Like.find({ beatId: id });
-    const currentUserLiked = likes.find(
-      (el) => el.userId.toString() === currentUserObject?._id.toString()
-    )
-      ? true
-      : false;
+    const likesCount = await Like.countDocuments({ beatId: id });
+    const currentUserLike = await Like.find({
+      beatId: id,
+      userId: currentUserObject?._id,
+    });
+    let liked = false;
+    if (currentUserLike.length) {
+      liked = true;
+    }
 
     const mergedObject = {
       ...JSON.parse(JSON.stringify(beat[0])),
-      likesCount: likes.length,
-      liked: currentUserLiked,
+      likesCount,
+      liked,
+      commentsCount,
     };
-    
+
     return mergedObject;
   } catch (error) {
     console.log(error);
     throw new Error("Failed to fetch data from 'Beat' model");
+  }
+}
+
+export async function getComments(params) {
+  const commentPageSize = 10;
+
+  const skip = (params.page - 1) * commentPageSize;
+  console.log("to skip: ", skip);
+  try {
+    connectToDB();
+
+    //Fetching comments
+    const comments = await Comment.find({ beatId: params?.beatId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(commentPageSize)
+      .populate({
+        path: "userId",
+        select: "username picture",
+      });
+
+    const plainObjectList = comments.map((obj) =>
+      JSON.parse(JSON.stringify(obj))
+    );
+
+    return plainObjectList;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to fetch data from 'Comment' model");
   }
 }
 

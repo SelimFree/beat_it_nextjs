@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { Beat, Like, User } from "./models";
+import { Beat, Comment, Like, User } from "./models";
 import { connectToDB, deleteFile, saveFile, validate } from "./utils";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "./auth";
-import { getBeats } from "@/lib/data";
+import { getBeats, getComments } from "@/lib/data";
 import bcrypt from "bcryptjs";
 
 export async function handleCreateBeat(formState, formData) {
@@ -126,6 +126,38 @@ export async function handleLoadMoreBeats(formState, formData) {
   console.log("Current page: ", page);
   const newBeat = await getBeats({ page: parseInt(page) });
   return [...formState, ...newBeat];
+}
+
+export async function handleCommentCreate(formState, formData) {
+  const { comment_content, userEmail, beatId } = Object.fromEntries(formData);
+
+  let error = validate(Object.fromEntries(formData));
+  if (error) {
+    return error;
+  }
+  try {
+    connectToDB();
+    const user = await User.findOne({ email: userEmail });
+
+    const newComment = new Comment({
+      content: comment_content,
+      userId: user._id,
+      beatId: beatId,
+    });
+    await newComment.save();
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to create an entry in 'Comment' model");
+  }
+  revalidatePath(`/beats/${beatId}`);
+}
+
+export async function handleLoadMoreComments(formState, formData) {
+  const { page, beatId } = Object.fromEntries(formData);
+  console.log("Current comment page: ", page);
+  const newComments = await getComments({ page: parseInt(page), beatId });
+  console.log("New comments: ", newComments);
+  return [...formState, ...newComments];
 }
 
 export async function handleCredentialsRegister(formState, formData) {

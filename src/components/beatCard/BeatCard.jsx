@@ -133,7 +133,7 @@ function BeatCard({ beat, playerParams, editable, user }) {
           </div>
         </Link>
         <div className="flex gap-2 justify-end mb-2 items-center">
-          <span className="font-semibold">0</span>
+          <span className="font-semibold">{beat?.commentsCount}</span>
           <button className="p-0 h-fit bg-transparent hover:bg-transparent">
             <Image
               src="/assets/comment.png"
