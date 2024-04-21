@@ -25,7 +25,7 @@ function Comments({ comments, user, beatId }) {
   const send = (formData) => {
     formAction(formData);
     window.location.reload();
-  }
+  };
 
   const handleContentShow = (e) => {
     e.target.classList.toggle("truncate");
@@ -59,7 +59,7 @@ function Comments({ comments, user, beatId }) {
           </span>
         </form>
       </div>
-      <div className="w-full flex flex-col rounded-[10px] p-2 bg-white">
+      <div className="w-full flex flex-col rounded-[10px] p-4 bg-white">
         {commentsState?.map((comment, i) => (
           <div
             key={i}
@@ -69,7 +69,16 @@ function Comments({ comments, user, beatId }) {
           >
             <div className="flex mr-auto gap-4 items-center mb-4">
               <div className="relative w-12 h-12 rounded-full">
-                <Image src="/assets/avatar.png" fill alt="Avatar image" />
+                <Image
+                  src={`${
+                    comment?.userId?.picture
+                      ? comment?.userId.picture
+                      : "/assets/avatar.png"
+                  }`}
+                  fill
+                  alt="Avatar image"
+                  className="rounded-full object-cover"
+                />
               </div>
               <div className="flex flex-col">
                 <span className="font-bold">{comment?.userId?.username}</span>

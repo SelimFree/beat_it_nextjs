@@ -141,14 +141,13 @@ function BeatPlayer({ playerParams }) {
             alt="Close button"
           />
         </button>
-        <div className="relative mb-4 lg:w-[12rem]">
+        <div className="relative mb-4 w-[12rem] h-[12rem]">
           <div ref={visualiserRef} id="visualizer"></div>
           <Image
             src={playerParams.currentBeat?.cover || "/assets/logo.png"}
-            width={250}
-            height={250}
+            fill
             alt="Beat cover image"
-            className={`rounded-full ${
+            className={`rounded-full object-cover ${
               playerParams.isPlaying ? "animate-cover" : "animate-cover_paused"
             }`}
           />

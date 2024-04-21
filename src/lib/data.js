@@ -127,3 +127,32 @@ export async function getUsers() {
     throw new Error("Failed to fetch data from 'User' model");
   }
 }
+
+export async function getUserInfo(user) {
+  try {
+    connectToDB();
+    const currentUserObject = await User.findOne({ email: user?.email });
+
+    const likesCount = await Like.countDocuments({
+      userId: currentUserObject?._id,
+    });
+    const commentsCount = await Comment.countDocuments({
+      userId: currentUserObject?._id,
+    });
+    const beatsCount = await Beat.countDocuments({
+      userId: currentUserObject?._id,
+    });
+
+    return {
+      name: user?.name,
+      email: user?.email,
+      picture: currentUserObject?.picture,
+      likesCount,
+      commentsCount,
+      beatsCount,
+    };
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to fetch data");
+  }
+}

@@ -65,10 +65,10 @@ function BeatCard({ beat, playerParams, editable, user }) {
         <div className="flex mr-auto gap-4 items-center mb-4">
           <div className="relative w-12 h-12 rounded-full">
             <Image
-              src="/assets/avatar.png"
+              src={`${beat?.userId?.picture ? beat?.userId.picture : "/assets/avatar.png"}`}
               fill
               alt="Avatar image"
-              className="object-cover"
+              className="rounded-full object-cover"
             />
           </div>
           <div className="flex flex-col">

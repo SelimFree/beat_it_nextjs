@@ -1,16 +1,16 @@
-import { handleLogout } from "@/lib/actions";
-
+import ProfileForm from "@/components/profileForm/profileForm";
+import { auth } from "@/lib/auth";
+import { getUserInfo } from "@/lib/data";
 export const metadata = {
   title: "Profile",
 };
 
-function ProfilePage() {
+async function ProfilePage() {
+  const session = await auth();
+  const userInfo = await getUserInfo(session?.user);
   return (
-    <div className="px-4 pt-24 pb-16 flex flex-col gap-4 items-center justify-center h-full">
-      <h2>Profile</h2>
-      <form action={handleLogout}>
-        <button>Logout</button>
-      </form>
+    <div className="h-full px-4 py-16 flex flex-col gap-4 items-center justify-center">
+      <ProfileForm userInfo={userInfo}/>
     </div>
   );
 }

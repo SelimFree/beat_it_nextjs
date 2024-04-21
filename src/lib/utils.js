@@ -27,8 +27,19 @@ export async function connectToDB() {
   }
 }
 
-export async function saveFile(mediaFile) {
+export async function saveFile(mediaFile, type = "beat") {
+  let upload;
   const beatUploadFolder = "public/upload/beats";
+  const userUploadFolder = "public/upload/users";
+
+  switch (type) {
+    case "beat":
+      upload = beatUploadFolder;
+      break;
+    case "user":
+      upload = userUploadFolder;
+      break;
+  }
 
   if (!mediaFile?.size) {
     return;
@@ -46,11 +57,11 @@ export async function saveFile(mediaFile) {
   }
 
   const fileType = mediaFile.name.split(".").pop();
-  const filePath = `${beatUploadFolder}${folder}/beat_media_${Date.now()}.${fileType}`;
+  const filePath = `${upload}${folder}/beat_media_${Date.now()}.${fileType}`;
 
   try {
-    if (!fs.existsSync(`${beatUploadFolder}${folder}`)) {
-      fs.mkdir(`${beatUploadFolder}${folder}`, { recursive: true }, (err) => {
+    if (!fs.existsSync(`${upload}${folder}`)) {
+      fs.mkdir(`${upload}${folder}`, { recursive: true }, (err) => {
         if (err) {
           throw new Error(`Error creating a folder: ${err}`);
         }
@@ -72,8 +83,6 @@ export async function deleteFile(fileUrl) {
 
   if (fs.existsSync(absoluteFilePath)) {
     fs.unlinkSync(absoluteFilePath);
-  } else {
-    throw new Error("File doesn't exist");
   }
 }
 
@@ -176,6 +185,20 @@ export function validate(formData) {
           return {
             error: "Comment must have 2-250 characters",
           };
+        }
+        break;
+      //Avatar picture validation
+      case "avatar_update":
+        const avatarImage = formData[field];
+        console.log(avatarImage);
+        if (avatarImage?.size === 0) {
+          return {
+            error: "Select a file for a avatar image",
+          };
+        }
+        const avatarError = validateFile(avatarImage);
+        if (avatarError) {
+          return avatarError;
         }
         break;
     }

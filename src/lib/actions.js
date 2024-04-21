@@ -160,6 +160,37 @@ export async function handleLoadMoreComments(formState, formData) {
   return [...formState, ...newComments];
 }
 
+export async function handleUpdateUserAvatar(formState, formData) {
+  const { avatar_update, user } = Object.fromEntries(formData);
+
+  let error = validate(Object.fromEntries(formData));
+  if (error) {
+    return error;
+  }
+
+  try {
+    connectToDB();
+    const userToUpdate = await User.find({ email: user });
+
+    const avatarPath = await saveFile(avatar_update, "user");
+
+    const updateFields = {};
+
+    if (avatarPath) {
+      updateFields["picture"] = avatarPath;
+      if (userToUpdate[0]?.picture)
+      deleteFile(userToUpdate[0].picture);
+    }
+    
+    await User.updateOne({ _id: userToUpdate[0]._id }, updateFields);
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to update an entry in 'User' model");
+  }
+  revalidatePath("/profile");
+  // redirect("/beats");
+}
+
 export async function handleCredentialsRegister(formState, formData) {
   const { username, email, password, repeat_password } =
     Object.fromEntries(formData);
