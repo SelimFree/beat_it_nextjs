@@ -12,11 +12,11 @@ async function Navbar() {
       path: "/beats",
       visible: true,
     },
-    {
-      title: "Admin",
-      path: "/admin",
-      visible: session?.user?.isAdmin,
-    },
+    // {
+    //   title: "Admin",
+    //   path: "/admin",
+    //   visible: session?.user?.isAdmin,
+    // },
     {
       title: "Profile",
       path: "/profile",
@@ -37,16 +37,16 @@ async function Navbar() {
       path: "/login",
       visible: !session?.user,
     },
-    {
-      title: "About",
-      path: "/about",
-      visible: true,
-    },
-    {
-      title: "Contact us",
-      path: "/contact",
-      visible: true,
-    },
+    // {
+    //   title: "About",
+    //   path: "/about",
+    //   visible: true,
+    // },
+    // {
+    //   title: "Contact us",
+    //   path: "/contact",
+    //   visible: true,
+    // },
   ];
 
   return (

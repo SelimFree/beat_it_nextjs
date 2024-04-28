@@ -87,6 +87,9 @@ export async function handleDeleteBeat(id) {
     deleteFile(coverPath);
     deleteFile(audioPath);
 
+    Like.deleteMany({beatId: id});
+    Comment.deleteMany({beatId: id});
+
     await Beat.deleteOne({ _id: id });
   } catch (error) {
     console.log(error);

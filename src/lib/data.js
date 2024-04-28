@@ -10,8 +10,14 @@ export async function getBeats(params) {
     //Finding user from the database using email
     const currentUserObject = await User.findOne({ email: params.user });
 
+    let myFilter;
+    //My beats filtering
+    if (params?.my) {
+      myFilter = { userId: currentUserObject._id };
+    }
+
     //Fetching beats
-    const beats = await Beat.find()
+    const beats = await Beat.find(myFilter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(beatPageSize)
