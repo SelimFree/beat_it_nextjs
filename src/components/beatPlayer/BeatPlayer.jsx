@@ -17,9 +17,10 @@ function BeatPlayer({ playerParams }) {
   const analyser = useRef(null);
   const dataArray = useRef(null);
   const visualiserRef = useRef(null);
+  const visualiserBarsRef = useRef(null);
   let animationFrameId;
   let suspendCount = 0;
-
+  const visualiserBarCount = 128;
   const handleTimeUpdate = (e) => {
     setTimeout(() => {
       setAudioTimeInfo((prev) => {
@@ -76,10 +77,10 @@ function BeatPlayer({ playerParams }) {
     analyser.current.getByteFrequencyData(dataArray.current);
 
     const arr = [...dataArray.current];
-    const sum = arr.reduce((acc, value) => acc + value, 0);
-    const average = sum / arr.length;
+    // const sum = arr.reduce((acc, value) => acc + value, 0);
+    // const average = sum / arr.length;
 
-    const scale = 1 + average / 500;
+    // const scale = 1 + average / 500;
 
     animationFrameId = requestAnimationFrame(renderFrame);
     console.log(audioContext.current.state);
@@ -88,11 +89,20 @@ function BeatPlayer({ playerParams }) {
       suspendCount++;
     }
 
-    if (!visualiserRef.current || suspendCount > MAX_SUSPEND_COUNT) {
+    if (
+      (!visualiserRef.current && !visualiserBarsRef.current) ||
+      suspendCount > MAX_SUSPEND_COUNT
+    ) {
       cancelAnimationFrame(animationFrameId);
       suspendCount = 0;
     } else {
-      visualiserRef.current.style.transform = `scale(${scale > 1 ? scale : 1})`;
+      // visualiserRef.current.style.transform = `scale(${scale > 1 ? scale : 1})`;
+      for (let i = 0; i < arr.length; i += 1) {
+        let barHeight = (arr[i] + arr[i] * 100) / 1000;
+        visualiserBarsRef.current.children[i].style.height = `${
+          104 + barHeight
+        }%`;
+      }
     }
   };
 
@@ -143,6 +153,27 @@ function BeatPlayer({ playerParams }) {
         </button>
         <div className="relative mb-4 w-[12rem] h-[12rem]">
           <div ref={visualiserRef} id="visualizer"></div>
+          <div
+            className={`w-full h-full ${
+              playerParams.isPlaying ? "animate-bars" : "animate-bars_paused"
+            }`}
+            ref={visualiserBarsRef}
+          >
+            {[...new Array(visualiserBarCount)].map((bar, i) => {
+              return (
+                <div
+                  key={i}
+                  id={`bar-${i}`}
+                  style={{
+                    transform: `translate(-50%, -50%) rotate(${
+                      (360 / visualiserBarCount) * i
+                    }deg)`,
+                  }}
+                  className="visualiser-bar"
+                ></div>
+              );
+            })}
+          </div>
           <Image
             src={playerParams.currentBeat?.cover || "/assets/logo.png"}
             fill

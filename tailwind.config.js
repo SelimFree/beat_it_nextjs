@@ -25,6 +25,8 @@ module.exports = {
         loader7: "loadanim 1s 300ms linear infinite",
         cover: "coverspin 15s linear infinite",
         cover_paused: "coverspin 15s linear infinite paused",
+        bars: "coverspin 60s linear infinite",
+        bars_paused: "coverspin 60s linear infinite paused",
       },
 
       keyframes: {

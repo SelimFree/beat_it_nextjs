@@ -114,6 +114,8 @@ button:hover {
 }
 
 #visualizer {
+  /* another type of visualiser */
+  display: none;
   position: absolute;
   border-radius: 50%;
   top: 0;
@@ -132,4 +134,14 @@ button:hover {
     var(--transparent-light-blue) 90%,
     var(--transparent-light-blue) 100%
   );
+}
+
+.visualiser-bar {
+  width: 3px;
+  border-radius: 0.5rem;
+  background-color: #424874;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
 }
