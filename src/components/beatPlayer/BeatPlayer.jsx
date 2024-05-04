@@ -96,6 +96,7 @@ function BeatPlayer({ playerParams }) {
       cancelAnimationFrame(animationFrameId);
       suspendCount = 0;
     } else {
+      console.log(arr)
       // visualiserRef.current.style.transform = `scale(${scale > 1 ? scale : 1})`;
       for (let i = 0; i < arr.length; i += 1) {
         let barHeight = (arr[i] + arr[i] * 100) / 1000;

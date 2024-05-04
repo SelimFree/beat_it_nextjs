@@ -8,7 +8,7 @@ import { handleDeleteBeat, handleUnlike, handleLike } from "@/lib/actions";
 
 function BeatCard({ beat, playerParams, editable, user }) {
   const [showMenu, setShowMenu] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(beat?.liked);
   const handleDescriptionShow = (e) => {
     e.target.classList.toggle("truncate");
   };
@@ -51,13 +51,6 @@ function BeatCard({ beat, playerParams, editable, user }) {
       return !prev;
     });
   };
-
-  useEffect(() => {
-    setLiked(() => {
-      console.log(beat?.liked);
-      return beat?.liked;
-    });
-  }, []);
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-[10px] max-w-[40rem] w-full">

@@ -38,7 +38,7 @@ function LoginForm() {
           {formState?.error}
         </span>
         <div className="flex justify-between mb-auto lg:mb-4">
-          <span>Don't have an account? </span>
+          <span>Don&apos;t have an account? </span>
           <Link
             href="register"
             className="text-dark-blue text-md font-semibold underline"
